@@ -1,0 +1,76 @@
+// Hello.lh
+
+// ベースレイヤ
+baselayer
+{
+	// ベースクラス
+	base class Hello
+	{
+	public:
+		Hello();
+		base void Print();
+	};
+
+}
+
+// 英語レイヤ
+layer English
+{
+	// パーシャルクラス
+	partial class Hello
+	{
+	public:
+		partial void Print();
+	};
+
+}
+
+// 日本語レイヤ
+layer Japanese
+{
+	// パーシャルクラス
+	partial class Hello
+	{
+	public:
+		partial void Print();
+	};
+
+}
+
+//Ground mode
+layer Ground
+{
+	partial class Hello
+	{
+	public:
+		partial void Print();
+	};
+
+}
+
+//Flight mode
+layer Flight
+{
+	partial class Hello
+	{
+	public:
+		partial void Print();
+	};
+
+	// アクティベート開始時に実行されるイベントハンドラ
+	[eventhandler(activating)]
+	void OnActivating();
+
+	// アクティベート終了時に実行されるイベントハンドラ
+	[eventhandler(activated)]
+	void OnActivated();
+
+	// ディアクティベート開始時に実行されるイベントハンドラ
+	[eventhandler(deactivating)]
+	void OnDeactivating();
+
+	// ディアクティベート終了時に実行されるイベントハンドラ
+	[eventhandler(deactivated)]
+	void OnDeactivated();
+
+}

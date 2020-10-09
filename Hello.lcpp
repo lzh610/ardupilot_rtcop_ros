@@ -1,0 +1,90 @@
+// Hello.lcpp
+#import_lh "Hello.lh"
+#include <ros/ros.h>
+#include <stdio.h>
+#include "gnc_functions.h"
+using namespace gnc;
+// base layer
+baselayer
+{
+	// constructor
+	Hello::Hello()
+	{
+	}
+
+	// base method
+	void Hello::Print()
+	{
+		ROS_INFO_STREAM("BaseClass");
+	}
+
+}
+
+layer English
+{
+	void Hello::Print()
+	{
+		ROS_INFO_STREAM("Hello World");
+	}
+
+}
+
+layer Japanese
+{
+	void Hello::Print()
+	{
+  	  ROS_INFO_STREAM("Kon-nichiwa sekai");
+	}
+
+}
+
+layer Ground
+{
+	void Hello::Print()
+	{
+		ROS_INFO_STREAM("Ground Mode");
+	}
+}
+
+layer Flight
+{
+	void Hello::Print()
+	{
+		ROS_INFO_STREAM("Flight Mode");
+	}
+
+	// アクティベート開始時に実行されるイベントハンドラ
+	void OnActivating()
+	{
+		ros::Rate rate(1);
+		takeoff(1);
+		nextWayPoint.x = 0;
+		nextWayPoint.y = 0;
+		nextWayPoint.z = 5;
+		nextWayPoint.psi = 0;
+		waypointlist.push_back(nextWayPoint);
+		ROS_INFO_STREAM("taking off");
+		ros::spinOnce();
+		rate.sleep();
+		set_destination(waypointlist[0].x,waypointlist[0].y,waypointlist[0].z,waypointlist[0].psi);
+	}
+
+	// アクティベート終了時に実行されるイベントハンドラ
+	void OnActivated()
+	{
+		ROS_INFO_STREAM("Layer1::OnActivatedの実行\n");
+	}
+
+	// ディアクティベート開始時に実行されるイベントハンドラ
+	void OnDeactivating()
+	{
+		ROS_INFO_STREAM("Layer1::OnDeactivatingの実行\n");
+	}
+
+	// ディアクティベート終了時に実行されるイベントハンドラ
+	void OnDeactivated()
+	{
+		ROS_INFO_STREAM("Layer1::OnDeactivatedの実行\n");
+	}
+
+}
