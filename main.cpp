@@ -49,9 +49,17 @@ int main(int argc, char **argv) {
 
 	// activate JapaneseLayer
 	RTCOP::deactivate(RTCOP::Generated::LayerID::Ground);
-	RTCOP::activate(RTCOP::Generated::LayerID::Flight);
+	active_normal(RTCOP::Generated::LayerID::Flight);
 	hello->Print();
-  	rate.sleep();                   
+	sleep(25);
+	ROS_INFO_STREAM("No signal found!");
+	active_suspend_until_deactive(RTCOP::Generated::LayerID::Nosignal);
+	sleep(2);
+	hello->Print();
+	sleep(8);
+  	rate.sleep();
+	deactive_suspend(RTCOP::Generated::LayerID::Nosignal);                   
+	
 	while (ros::ok())
 	{
 		/* code */

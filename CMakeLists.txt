@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(ardu-cros)
+project(Ardupilot-RTCOP-ROS)
 
 set(CMAKE_C_FLAGS "-no-pie -std=c++11 -pthread")
 set(CMAKE_CXX_FLAGS "-no-pie -std=c++11 -pthread")
-
+set(CMAKE_AUTORCC ON)
 find_package(catkin REQUIRED)
 
 find_package(catkin REQUIRED COMPONENTS
@@ -14,7 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES crostest
+#  LIBRARIES Ardupilot-RTCOP-ROS
 #  CATKIN_DEPENDS other_catkin_pkg
 #  DEPENDS system_lib
 )

@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>ardu-cros</name>
+  <name>Ardupilot-RTCOP-ROS</name>
   <version>0.0.0</version>
-  <description>The ardu-cros package</description>
+  <description>The Ardupilot-RTCOP-ROS package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
@@ -55,7 +55,7 @@
   <build_export_depend>std_msgs</build_export_depend>
   <exec_depend>mavros</exec_depend>
   <exec_depend>std_msgs</exec_depend>
-  <depend>rtcop</depend>
+  <!-- <depend>rtcop</depend> -->
 
 
   <!-- The export tag contains other, unspecified, tags -->

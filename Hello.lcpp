@@ -3,7 +3,9 @@
 #include <ros/ros.h>
 #include <stdio.h>
 #include "gnc_functions.h"
+#include "ActiveController.h"
 using namespace gnc;
+using namespace PLAM;
 // base layer
 baselayer
 {
@@ -56,29 +58,92 @@ layer Flight
 	// アクティベート開始時に実行されるイベントハンドラ
 	void OnActivating()
 	{
-		ros::Rate rate(1);
+		ros::Rate rate(0.5);
 		takeoff(1);
 		nextWayPoint.x = 0;
 		nextWayPoint.y = 0;
-		nextWayPoint.z = 5;
+		nextWayPoint.z = 2;
 		nextWayPoint.psi = 0;
-		waypointlist.push_back(nextWayPoint);
+		// waypointlist.push_back(nextWayPoint);
 		ROS_INFO_STREAM("taking off");
-		ros::spinOnce();
-		rate.sleep();
-		set_destination(waypointlist[0].x,waypointlist[0].y,waypointlist[0].z,waypointlist[0].psi);
+		while(ros::ok()){
+			ros::spinOnce();
+		    rate.sleep();
+			break_point();
+			sleep(1);
+			break_point();
+			sleep(1);
+			break_point();
+			sleep(1);
+			break_point();
+			sleep(1);
+			break_point();			
+			if(check_waypoint_reached() == 1){
+				// ROS_INFO_STREAM()
+				rate.sleep();
+				nextWayPoint.z ++;
+				set_destination(nextWayPoint.x,nextWayPoint.y,nextWayPoint.z,nextWayPoint.psi);
+			}
+			if(nextWayPoint.z >= 10)
+				break;
+		}
+
 	}
 
 	// アクティベート終了時に実行されるイベントハンドラ
 	void OnActivated()
 	{
-		ROS_INFO_STREAM("Layer1::OnActivatedの実行\n");
+		ROS_INFO_STREAM("Flight Mode READY\n");
 	}
 
 	// ディアクティベート開始時に実行されるイベントハンドラ
 	void OnDeactivating()
 	{
 		ROS_INFO_STREAM("Layer1::OnDeactivatingの実行\n");
+	}
+
+	// ディアクティベート終了時に実行されるイベントハンドラ
+	void OnDeactivated()
+	{
+		ROS_INFO_STREAM("Layer1::OnDeactivatedの実行\n");
+	}
+
+}
+
+
+layer Nosignal
+{
+	void Hello::Print()
+	{
+		ROS_INFO_STREAM("Nosignal Mode");
+	}
+
+	// アクティベート開始時に実行されるイベントハンドラ
+	void OnActivating()
+	{
+		ROS_INFO_STREAM("NO SIGNAL!!WARNING!!");
+		ros::Rate rate(1);
+		rate.sleep();
+		// land();
+		nextWayPoint.x = 0;
+		nextWayPoint.y = 0;
+		nextWayPoint.z = 0;
+		nextWayPoint.psi = 0;
+		set_destination(nextWayPoint.x,nextWayPoint.y,nextWayPoint.z,nextWayPoint.psi);		
+		ROS_INFO_STREAM("NO SIGNAL!!WARNING!!");
+	}
+
+	// アクティベート終了時に実行されるイベントハンドラ
+	void OnActivated()
+	{
+		ROS_INFO_STREAM("WARNING!!NO SIGNAL!!WARNING!!WARNING!!");
+	}
+
+	// ディアクティベート開始時に実行されるイベントハンドラ
+	void OnDeactivating()
+	{
+		ROS_INFO_STREAM("SIGNAL RECOVER!");
+		// takeoff(1);
 	}
 
 	// ディアクティベート終了時に実行されるイベントハンドラ
