@@ -50,7 +50,7 @@ source ~/.bashrc
 順番により
 ```
 roslaunch iq_sim runway.launch　
-./startsitl.sh　
+cd ~/ardupilot/ArduCopter/ && sim_vehicle.py -v ArduCopter -f gazebo-iris --cons
 roslaunch iq_sim apm.launch
 rosrun Ardupilot-RTCOP-ROS Ardupilot-RTCOP-ROS_node（すでに登録したノード）
 ```
