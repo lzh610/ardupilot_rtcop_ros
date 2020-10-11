@@ -42,7 +42,7 @@ cd catkin_ws/src
 https://github.com/lzh610/Ardupilot-RTCOP-ROS.git
 ```
 
-###　ビルド
+### ビルド
 ```
 cd catkin_ws/src
 catkin build
