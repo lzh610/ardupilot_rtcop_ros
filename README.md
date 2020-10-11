@@ -63,6 +63,7 @@ rosrun Ardupilot-RTCOP-ROS Ardupilot-RTCOP-ROS_node
 を実行する
 
 Ｄを実行したらＢに戻し、"mode guided"を実行
+
 すべてのINFOをＤで表示する。
 
 
