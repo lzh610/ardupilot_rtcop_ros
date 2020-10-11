@@ -7,10 +7,15 @@
 
 ## プロジェクト構成
 catkin_ws/src/
+ 
  -Ardupilot-RTCOP-ROS
+ 
  -iq_sim
+ 
  -mavlink 
+ 
  -mavros
+ 
  -RTCOP
 
 ## 実装方法
@@ -28,7 +33,7 @@ https://github.com/Intelligent-Quads/iq_tutorials/blob/master/docs/installing_ga
 (既にcatkin_ws/srcを作ることを前提とする)
 ```
 cd catkin_ws/src
-git clone https://github.com/lzh610/RTCOP.git
+git clone https://github.com/tanigawaikuta/RTCOP.git
 ```
 
 ### Ardupilot-RTCOP-ROS
@@ -52,7 +57,7 @@ source ~/.bashrc
 roslaunch iq_sim runway.launch　
 cd ~/ardupilot/ArduCopter/ && sim_vehicle.py -v ArduCopter -f gazebo-iris --cons
 roslaunch iq_sim apm.launch
-rosrun Ardupilot-RTCOP-ROS Ardupilot-RTCOP-ROS_node（すでに登録したノード）
+rosrun Ardupilot-RTCOP-ROS Ardupilot-RTCOP-ROS_node
 ```
 
 を実行する
