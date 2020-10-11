@@ -30,7 +30,7 @@ https://github.com/Intelligent-Quads/iq_tutorials/blob/master/docs/Installing_Ar
 https://github.com/Intelligent-Quads/iq_tutorials/blob/master/docs/installing_gazebo_arduplugin.md
 
 ### RTCOP
-(既にcatkin_ws/srcを作ることを前提とする)
+(既にcatkin_ws/srcを作ったことを前提とする)
 ```
 cd catkin_ws/src
 git clone https://github.com/tanigawaikuta/RTCOP.git
