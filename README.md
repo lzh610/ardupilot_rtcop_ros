@@ -66,4 +66,8 @@ rosrun Ardupilot-RTCOP-ROS Ardupilot-RTCOP-ROS_node
 
 すべてのINFOをＤで表示する。
 
+## チュートリアル
 
+https://github.com/Intelligent-Quads/iq_tutorials
+
+（ビデオ版のリンクもこのページに記載されている）
