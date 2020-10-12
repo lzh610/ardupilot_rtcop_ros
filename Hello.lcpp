@@ -17,56 +17,40 @@ baselayer
 	// base method
 	void Hello::Print()
 	{
-		ROS_INFO_STREAM("BaseClass");
+		ROS_INFO_STREAM("[RTCOP]:BaseClass");
 	}
 
 }
 
-layer English
-{
-	void Hello::Print()
-	{
-		ROS_INFO_STREAM("Hello World");
-	}
-
-}
-
-layer Japanese
-{
-	void Hello::Print()
-	{
-  	  ROS_INFO_STREAM("Kon-nichiwa sekai");
-	}
-
-}
-
+//Ground Mode
 layer Ground
 {
 	void Hello::Print()
 	{
-		ROS_INFO_STREAM("Ground Mode");
+		ROS_INFO_STREAM("[RTCOP]:Ground Mode");
 	}
 }
 
+//Flight Mode
 layer Flight
 {
 	void Hello::Print()
 	{
-		ROS_INFO_STREAM("Flight Mode");
+		ROS_INFO_STREAM("[RTCOP]:Flight Mode");
 	}
 
 	// アクティベート開始時に実行されるイベントハンドラ
 	void OnActivating()
 	{
-		ros::Rate rate(0.5);
-		takeoff(1);
+		ros::Rate rate(1);
+		takeoff(1); 
 		nextWayPoint.x = 0;
 		nextWayPoint.y = 0;
 		nextWayPoint.z = 2;
 		nextWayPoint.psi = 0;
 		// waypointlist.push_back(nextWayPoint);
-		ROS_INFO_STREAM("taking off");
-		while(ros::ok()){
+		ROS_INFO_STREAM("[RTCOP]:taking off");
+		while(ros::ok()){ //横取り可能になる効果が見えやすいため、４秒ごとで１メートルを上昇すると設置した
 			ros::spinOnce();
 		    rate.sleep();
 			break_point();
@@ -84,6 +68,8 @@ layer Flight
 				nextWayPoint.z ++;
 				set_destination(nextWayPoint.x,nextWayPoint.y,nextWayPoint.z,nextWayPoint.psi);
 			}
+
+			//地面から10メートル以上に達するなら飛行モードを完全に起動したと判定する
 			if(nextWayPoint.z >= 10)
 				break;
 		}
@@ -93,35 +79,35 @@ layer Flight
 	// アクティベート終了時に実行されるイベントハンドラ
 	void OnActivated()
 	{
-		ROS_INFO_STREAM("Flight Mode READY\n");
+		ROS_INFO_STREAM("[RTCOP]:Flight Mode READY\n");
 	}
 
 	// ディアクティベート開始時に実行されるイベントハンドラ
 	void OnDeactivating()
 	{
-		ROS_INFO_STREAM("Layer1::OnDeactivatingの実行\n");
+		ROS_INFO_STREAM("[RTCOP]:Flight Mode Deactivating\n");
 	}
 
 	// ディアクティベート終了時に実行されるイベントハンドラ
 	void OnDeactivated()
 	{
-		ROS_INFO_STREAM("Layer1::OnDeactivatedの実行\n");
+		ROS_INFO_STREAM("[RTCOP]:Flight Mode Deactivated");
 	}
 
 }
 
-
+//Nosignal Mode
 layer Nosignal
 {
 	void Hello::Print()
 	{
-		ROS_INFO_STREAM("Nosignal Mode");
+		ROS_INFO_STREAM("[RTCOP]:Nosignal Mode");
 	}
 
 	// アクティベート開始時に実行されるイベントハンドラ
 	void OnActivating()
 	{
-		ROS_INFO_STREAM("NO SIGNAL!!WARNING!!");
+		ROS_INFO_STREAM("[RTCOP]:NO SIGNAL!!WARNING!!");
 		ros::Rate rate(1);
 		rate.sleep();
 		// land();
@@ -130,26 +116,26 @@ layer Nosignal
 		nextWayPoint.z = 0;
 		nextWayPoint.psi = 0;
 		set_destination(nextWayPoint.x,nextWayPoint.y,nextWayPoint.z,nextWayPoint.psi);		
-		ROS_INFO_STREAM("NO SIGNAL!!WARNING!!");
+		ROS_INFO_STREAM("[RTCOP]:NO SIGNAL!!WARNING!!");
 	}
 
 	// アクティベート終了時に実行されるイベントハンドラ
 	void OnActivated()
 	{
-		ROS_INFO_STREAM("WARNING!!NO SIGNAL!!WARNING!!WARNING!!");
+		ROS_INFO_STREAM("[RTCOP]:Nosignal Mode READY\n");
 	}
 
 	// ディアクティベート開始時に実行されるイベントハンドラ
 	void OnDeactivating()
 	{
-		ROS_INFO_STREAM("SIGNAL RECOVER!");
+		ROS_INFO_STREAM("[RTCOP]:SIGNAL RECOVER!");
 		// takeoff(1);
 	}
 
 	// ディアクティベート終了時に実行されるイベントハンドラ
 	void OnDeactivated()
 	{
-		ROS_INFO_STREAM("Layer1::OnDeactivatedの実行\n");
+		ROS_INFO_STREAM("[RTCOP]:SIGNAL RECOVER");
 	}
 
 }

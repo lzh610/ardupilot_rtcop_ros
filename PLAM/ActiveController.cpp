@@ -12,6 +12,7 @@
 using namespace std;
 using namespace RTCOP;
 namespace PLAM{
+//LATC
 ActiveController::ActiveController(RTCOP::Generated::LayerID id,int s,thread::id tid){
     layerid = id;
     status = s;
@@ -42,7 +43,7 @@ thread::id ActiveController::get_threadId(){
     return thread_id;
 }
 
-
+//AS
 vector<ActiveController> controller;
 int emergency_flag = 0;
 mutex m;

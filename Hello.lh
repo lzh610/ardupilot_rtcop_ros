@@ -13,30 +13,6 @@ baselayer
 
 }
 
-// 英語レイヤ
-layer English
-{
-	// パーシャルクラス
-	partial class Hello
-	{
-	public:
-		partial void Print();
-	};
-
-}
-
-// 日本語レイヤ
-layer Japanese
-{
-	// パーシャルクラス
-	partial class Hello
-	{
-	public:
-		partial void Print();
-	};
-
-}
-
 //Ground mode
 layer Ground
 {

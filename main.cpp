@@ -1,20 +1,14 @@
 #include <ros/ros.h>
 #include "Generated/API.h"
 #include "Generated/BaseLayer.h"
-//#include "parameter.h"
 #include "gnc_functions.h"
-#include "test.h"
 #include "ActiveController.h"
 
-// std::vector<gnc_api_waypoint> waypointlist;
-// gnc_api_waypoint nextWayPoint;
 using namespace gnc;
 using namespace PLAM;
 int main(int argc, char **argv) {
-// initialize ros
-//   ros::init(argc, argv, "hello");
-//   ros::NodeHandle nh; 
-	printf("%d",gnc::a_test());
+	//------------ROS・Ardupilotなどの初期化------------
+	// initialize ros
     ros::init(argc, argv, "gnc_node");
 	ros::NodeHandle gnc_node;           
     ros::Rate rate(1); 
@@ -29,42 +23,52 @@ int main(int argc, char **argv) {
 
 	//create local reference frame 
 	initialize_local_frame();            
-
-  	// initialize rtcop
+	//------------ROS・Ardupilotなどの初期化　完了------------
+  	
+	// initialize rtcop
   	RTCOP::Framework::Instance->Initialize();
 
 	// instantiate class Hello
 	baselayer::Hello* hello = RTCOP::copnew<baselayer::Hello>();
-
-	std::vector<gnc_api_waypoint> waypointlist;
-	gnc_api_waypoint nextWayPoint;
-  	//ROS_INFO_STREAM("Hello World!");
+	hello->Print();
   	rate.sleep();                   
-
-	// activate EnglishLayer
-	// RTCOP::activate(RTCOP::Generated::LayerID::Ground);
+	// Ground Mode 起動
 	active_normal(RTCOP::Generated::LayerID::Ground);
 	hello->Print();
   	rate.sleep();                   
+	sleep(3);
 
-	// activate JapaneseLayer
+	// Ground Mode 解除（PLAMにおける正常系deactivate関数をちょっとBUGが発見したため、もうちょっと修正します）
 	RTCOP::deactivate(RTCOP::Generated::LayerID::Ground);
+	// Flight Mode　起動
 	active_normal(RTCOP::Generated::LayerID::Flight);
 	hello->Print();
 	sleep(25);
-	ROS_INFO_STREAM("No signal found!");
+
+	//信号途絶が発生
+	ROS_INFO_STREAM("[RTCOP]:No signal found!");
+
+	//Nosignal Mode 起動
 	active_suspend_until_deactive(RTCOP::Generated::LayerID::Nosignal);
-	sleep(2);
-	hello->Print();
-	sleep(8);
-  	rate.sleep();
-	deactive_suspend(RTCOP::Generated::LayerID::Nosignal);                   
-	
-	while (ros::ok())
+
+	int time_counter = 0;
+	while (ros::ok())//一秒ごとでprint関数を実行する
 	{
-		/* code */
+		hello->Print();
+		sleep(1);
+		time_counter++;
+		if (time_counter >= 10)
+		{
+			break;
+		}
+		
 	}
-	
+
+	//再接続成功、Nosignal Mode 解除
+	deactive_suspend(RTCOP::Generated::LayerID::Nosignal);                   
+	hello->Print();
+	sleep(70);
+	hello->Print();
 	// Helloのdelete
 	delete hello;
 
