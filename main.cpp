@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
 	RTCOP::deactivate(RTCOP::Generated::LayerID::Ground);
 	// Flight Mode　起動
 	active_normal(RTCOP::Generated::LayerID::Flight);
-	hello->Print();
+	hello->Print(); //Flight modeアクティベーションが完了していないのでbase layerのhelloが表示される
 	sleep(25);
 
 	//信号途絶が発生
@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
 	int time_counter = 0;
 	while (ros::ok())//一秒ごとでprint関数を実行する
 	{
-		hello->Print();
+		hello->Print();//Nosignal modeアクティベーションが完了。Nosignal modeのhelloが表示される
 		sleep(1);
 		time_counter++;
 		if (time_counter >= 10)
@@ -66,9 +66,9 @@ int main(int argc, char **argv) {
 
 	//再接続成功、Nosignal Mode 解除
 	deactive_suspend(RTCOP::Generated::LayerID::Nosignal);                   
-	hello->Print();
+	hello->Print(); //Flight modeアクティベーションが完了していないのでbase layerのhelloが表示される
 	sleep(70);
-	hello->Print();
+	hello->Print(); //Flight modeアクティベーションが完了。Flight modeのhelloが表示される
 	// Helloのdelete
 	delete hello;
 
