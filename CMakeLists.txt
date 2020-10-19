@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(Ardupilot-RTCOP-ROS)
 
 set(CMAKE_C_FLAGS "-no-pie -std=c++11 -pthread")
-set(CMAKE_CXX_FLAGS "-no-pie -std=c++11 -pthread")
+set(CMAKE_CXX_FLAGS "-no-pie -std=c++1z -pthread")
 set(CMAKE_AUTORCC ON)
 find_package(catkin REQUIRED)
 
