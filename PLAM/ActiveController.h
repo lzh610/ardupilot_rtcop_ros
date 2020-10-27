@@ -71,8 +71,10 @@ extern void active_suspend(RTCOP::Generated::LayerID layerid);
 //指定された正常系アクティベートを一時停止させる
 extern void active_suspend(RTCOP::Generated::LayerID layerid,vector<RTCOP::Generated::LayerID> target_layerid);
 
+//デアクティベートまで一時停止
 extern void active_suspend_until_deactive(RTCOP::Generated::LayerID layerid);
 
+//デアクティベートまで一時停止（1 to n）
 extern void active_suspend_until_deactive(RTCOP::Generated::LayerID layerid,vector<RTCOP::Generated::LayerID> target_layerid);
 //------------------------------------------------------------
 
