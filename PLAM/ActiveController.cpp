@@ -79,13 +79,13 @@ void break_point(){
         pthread_exit(NULL);
 }
 
-void active_emergency(RTCOP::Generated::LayerID layerid, int s, RTCOP::Generated::LayerID target_layerid,bool b){
+void active_or_deact_emergency(RTCOP::Generated::LayerID layerid, int s, vector<RTCOP::Generated::LayerID> target_layerid,bool b,bool f){
     m.lock();
     ActiveController ac(layerid,0,this_thread::get_id());
     controller.push_back(ac);
     emergency_flag = 1;
     m.unlock();
-    if(layerid == target_layerid){
+    if(layerid == target_layerid[0]){
         for(int i = 0;i < controller.size();i++){
             //printf("%d,%d\n",controller[i].get_id(),controller[i].get_threadId());
             if(controller[i].get_id() != layerid){
@@ -94,8 +94,15 @@ void active_emergency(RTCOP::Generated::LayerID layerid, int s, RTCOP::Generated
                 //printf("status:%d",controller[i].get_status());
             }
         }
-    
-        activate(layerid);
+        if(f){
+            activate(layerid);
+        }
+        else
+        {
+            deactivate(layerid);
+        }
+        
+            
         if(b == true){
             for(int i = 0;i < controller.size();i++){
                 if(controller[i].get_id() != layerid){
@@ -107,14 +114,23 @@ void active_emergency(RTCOP::Generated::LayerID layerid, int s, RTCOP::Generated
     
     else{
         int target_index = 0;
-        for(int i = 0;i < controller.size();i++){
-            if(controller[i].get_id() == target_layerid){
+        for(int k = 0;k < target_layerid.size();k++){
+            for(int i = 0;i < controller.size();i++){
+                if(controller[i].get_id() == target_layerid[k]){
                 controller[i].set_status(s);
                 target_index = i;
                 break;
+                }
             }
         }
-        activate(layerid);
+
+        if(f){
+            activate(layerid);
+        }
+        else
+        {
+            deactivate(layerid);
+        }
         if(b == true)
             controller[target_index].set_status(0);
     }
@@ -125,133 +141,119 @@ void active_emergency(RTCOP::Generated::LayerID layerid, int s, RTCOP::Generated
     m.unlock();
 }
 
-void deactive_emergency(RTCOP::Generated::LayerID layerid, RTCOP::Generated::LayerID target_layerid){
+void active_or_deactive(RTCOP::Generated::LayerID layerid,bool flag){
+    
+    while (emergency_flag == 1) {
+        chrono::milliseconds duration(20);
+        this_thread::sleep_for(duration);
+    }
+    
     m.lock();
     ActiveController ac(layerid,0,this_thread::get_id());
     controller.push_back(ac);
-    emergency_flag = 1;
     m.unlock();
-    if(layerid == target_layerid){
+    
+    if(flag){
+        activate(layerid);
+    }
+    else
+    {
         deactivate(layerid);
-        for(int i = 0;i < controller.size();i++){
-
-            if(controller[i].get_id() != layerid){
-                controller[i].set_status(0);
-            }
-        }
     }
-    else{
-        //int target_index = 0;
-        for(int i = 0;i < controller.size();i++){
-            deactivate(layerid);
-            if(controller[i].get_id() == target_layerid){
-                controller[i].set_status(0);
-                //target_index = i;
-                break;
-            }
-        }
-    }
-    m.lock();
-    emergency_flag = 0;
-    controller.erase(controller.begin()+get_this_thread_index(this_thread::get_id()));
-    m.unlock();
-}
-
-
-
-
-
-
-void active(RTCOP::Generated::LayerID layerid){
-    
-    while (emergency_flag == 1) {
-        chrono::milliseconds duration(20);
-        this_thread::sleep_for(duration);
-    }
-    
-    m.lock();
-    ActiveController ac(layerid,0,this_thread::get_id());
-    controller.push_back(ac);
-    m.unlock();
-    
-    activate(layerid);
     
     m.lock();
     controller.erase(controller.begin()+get_this_thread_index(this_thread::get_id()));
     m.unlock();
 }
 
-void active2(RTCOP::Generated::LayerID layerid){
-    
-    while (emergency_flag == 1) {
-        chrono::milliseconds duration(20);
-        this_thread::sleep_for(duration);
-    }
-    
-    m.lock();
-    ActiveController ac(layerid,0,this_thread::get_id());
-    controller.push_back(ac);
-    
-    activate(layerid);
-    
-    m.unlock();
-    
-}
-
+//引用可能
+//---------normal----------
 void active_normal(RTCOP::Generated::LayerID layerid){
-    thread t(active,layerid);
+    thread t(active_or_deactive,layerid,true);
     t.detach();
     usleep(1000);
 }
 
-void active_normal_mu(RTCOP::Generated::LayerID layerid){
-    thread t(active,layerid);
+void deactive_normal(RTCOP::Generated::LayerID layerid){
+    thread t(active_or_deactive,layerid,false);
     t.detach();
     usleep(1000);
 }
+//-------------------------
 
+//----------activate--------
 void active_break(RTCOP::Generated::LayerID layerid){
-    thread t(active_emergency,layerid,2,layerid,true);
+    vector<RTCOP::Generated::LayerID> target_layerid;
+    target_layerid.push_back(layerid);
+    thread t(active_or_deact_emergency,layerid,2,target_layerid,true,true);
     t.detach();
     usleep(1000);
 }
 
-void active_break(RTCOP::Generated::LayerID layerid,RTCOP::Generated::LayerID target_layerid){
-    thread t(active_emergency,layerid,2,target_layerid,true);
+void active_break(RTCOP::Generated::LayerID layerid,vector<RTCOP::Generated::LayerID> target_layerid){
+    thread t(active_or_deact_emergency,layerid,2,target_layerid,true,true);
     t.detach();
     usleep(1000);
 }
 
 void active_suspend(RTCOP::Generated::LayerID layerid){
-    thread t(active_emergency,layerid,1,layerid,true);
+    vector<RTCOP::Generated::LayerID> target_layerid;
+    target_layerid.push_back(layerid);
+    thread t(active_or_deact_emergency,layerid,1,target_layerid,true,true);
     t.detach();
     usleep(1000);
 }
 
-void active_suspend(RTCOP::Generated::LayerID layerid,RTCOP::Generated::LayerID target_layerid){
-    thread t(active_emergency,layerid,1,target_layerid,true);
+void active_suspend(RTCOP::Generated::LayerID layerid,vector<RTCOP::Generated::LayerID> target_layerid){
+    thread t(active_or_deact_emergency,layerid,1,target_layerid,true,true);
     t.detach();
     usleep(1000);
 }
-
 
 void active_suspend_until_deactive(RTCOP::Generated::LayerID layerid){
-    thread t(active_emergency,layerid,1,layerid,false);
+    vector<RTCOP::Generated::LayerID> target_layerid;
+    target_layerid.push_back(layerid);
+    thread t(active_or_deact_emergency,layerid,1,target_layerid,false,true);
     t.detach();
     usleep(1000);
 }
 
-
-void active_suspend_until_deactive(RTCOP::Generated::LayerID layerid,RTCOP::Generated::LayerID target_layerid){
-    thread t(active_emergency,layerid,1,target_layerid,false);
+void active_suspend_until_deactive(RTCOP::Generated::LayerID layerid,vector<RTCOP::Generated::LayerID> target_layerid){
+    thread t(active_or_deact_emergency,layerid,1,target_layerid,false,true);
     t.detach();
     usleep(1000);
 }
+//----------------------------
 
+//----------deactivate--------
 void deactive_suspend(RTCOP::Generated::LayerID layerid){
-    thread t(deactive_emergency,layerid,layerid);
+    vector<RTCOP::Generated::LayerID> target_layerid;
+    target_layerid.push_back(layerid);
+    thread t(active_or_deact_emergency,layerid,1,target_layerid,true,false);
     t.detach();
     usleep(1000);
 }
+
+void deactive_suspend(RTCOP::Generated::LayerID layerid,vector<RTCOP::Generated::LayerID> target_layerid){
+    thread t(active_or_deact_emergency,layerid,1,target_layerid,true,false);
+    t.detach();
+    usleep(1000);
+}
+
+void deactive_break(RTCOP::Generated::LayerID layerid){
+    vector<RTCOP::Generated::LayerID> target_layerid;
+    target_layerid.push_back(layerid);
+    thread t(active_or_deact_emergency,layerid,2,target_layerid,true,false);
+    t.detach();
+    usleep(1000);
+}
+
+void deactive_break(RTCOP::Generated::LayerID layerid,vector<RTCOP::Generated::LayerID> target_layerid){
+    thread t(active_or_deact_emergency,layerid,2,target_layerid,true,false);
+    t.detach();
+    usleep(1000);
+}
+//----------------------------
+
 
 }

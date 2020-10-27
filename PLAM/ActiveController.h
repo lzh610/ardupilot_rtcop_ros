@@ -55,30 +55,47 @@ extern time_t t;
 //正常系アクティベート
 extern void active_normal(RTCOP::Generated::LayerID layerid);
 
-//異常処理
+//正常系デアクティベーション
+extern void deactive_normal(RTCOP::Generated::LayerID layerid);
+
+//異常処理・アクティベーション-------------------------
 //他の正常系アクティベートを全部中断させる
 extern void active_break(RTCOP::Generated::LayerID layerid);
 
-//異常処理
 //指定された正常系アクティベートを中断させる
-extern void active_break(RTCOP::Generated::LayerID layerid,RTCOP::Generated::LayerID target_layerid);
+extern void active_break(RTCOP::Generated::LayerID layerid,vector<RTCOP::Generated::LayerID> target_layerid);
 
-//異常処理
 //他の正常系アクティベートを全部一時停止させる
 extern void active_suspend(RTCOP::Generated::LayerID layerid);
 
-//異常処理
 //指定された正常系アクティベートを一時停止させる
-extern void active_suspend(RTCOP::Generated::LayerID layerid,RTCOP::Generated::LayerID target_layerid);
+extern void active_suspend(RTCOP::Generated::LayerID layerid,vector<RTCOP::Generated::LayerID> target_layerid);
+
+//デアクティベートまで一時停止
+extern void active_suspend_until_deactive(RTCOP::Generated::LayerID layerid);
+
+//デアクティベートまで一時停止（1 to n）
+extern void active_suspend_until_deactive(RTCOP::Generated::LayerID layerid,vector<RTCOP::Generated::LayerID> target_layerid);
+//------------------------------------------------------------
 
 //中断ポイント
 extern void break_point();
 
-extern void active_suspend_until_deactive(RTCOP::Generated::LayerID layerid);
 
-extern void active_suspend_until_deactive(RTCOP::Generated::LayerID layerid,RTCOP::Generated::LayerID target_layerid);
+//異常処理・デアクティベーション--------------------------
+//他の正常系デアクティベートを全部中断させる
+extern void deactive_break(RTCOP::Generated::LayerID layerid);
 
+//指定された正常系デアクティベートを中断させる
+extern void deactive_break(RTCOP::Generated::LayerID layerid,vector<RTCOP::Generated::LayerID> target_layerid);
+
+//他の正常系デアクティベートを全部一時停止させる
 extern void deactive_suspend(RTCOP::Generated::LayerID layerid);
+
+//指定された正常系デアクティベートを一時停止させる
+extern void deactive_suspend(RTCOP::Generated::LayerID layerid,vector<RTCOP::Generated::LayerID> target_layerid);
+
+
 
 
 }
