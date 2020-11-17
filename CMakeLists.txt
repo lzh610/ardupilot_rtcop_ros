@@ -36,10 +36,19 @@ include_directories(
 file(GLOB MY_L_SOURCES *.lcpp)
 add_custom_command(OUTPUT Generated COMMAND "mono" "${PROJECT_SOURCE_DIR}/../RTCOP/Tool/LayerCompiler.exe" "${MY_L_SOURCES}" "-r" "${PROJECT_SOURCE_DIR}" "-i" "${PROJECT_SOURCE_DIR}" "-t" "linux64" "-e" "gcc" "-o" "${PROJECT_SOURCE_DIR}/Generated")
 link_directories(../RTCOP/Library/Linux/x64)
-file(GLOB MY_SOURCES *.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp)
-add_executable(${PROJECT_NAME}_node Generated ${MY_SOURCES})
+file(GLOB MAIN main.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp)
+file(GLOB GROUND ground_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp)
+add_executable(${PROJECT_NAME}_node Generated ${MAIN})
+add_executable(ground_node Generated ${GROUND})
+
 target_link_libraries(${PROJECT_NAME}_node
   RTCOP
   ${catkin_LIBRARIES}
 )
+
+target_link_libraries(ground_node
+  RTCOP
+  ${catkin_LIBRARIES}
+)
+
 

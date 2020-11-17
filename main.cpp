@@ -6,6 +6,7 @@
 
 using namespace gnc;
 using namespace PLAM;
+
 int main(int argc, char **argv) {
 	//------------ROS・Ardupilotなどの初期化------------
 	// initialize ros
@@ -15,7 +16,9 @@ int main(int argc, char **argv) {
 	
 	init_publisher_subscriber(gnc_node);
 
-    // wait for FCU connection
+	ros::Publisher chatter_pub = gnc_node.advertise<std_msgs::String>("chatter",1000);
+
+	// wait for FCU connection
 	wait4connect();
 
 	//wait for used to switch to mode GUIDED
@@ -24,54 +27,68 @@ int main(int argc, char **argv) {
 	//create local reference frame 
 	initialize_local_frame();            
 	//------------ROS・Ardupilotなどの初期化　完了------------
-  	
+	int count = 0;
+  	// while (ros::ok())
+  	// {
+    // 	/* code */
+    // 	std_msgs::String msg;
+
+    // 	std::stringstream ss;
+
+    // 	ss<< "hello world" << count;
+
+    // 	msg.data = ss.str();
+
+    // 	ROS_INFO("%s", msg.data.c_str());
+
+    // 	chatter_pub.publish(msg);
+
+    // 	ros::spinOnce();
+
+    // 	rate.sleep();
+    // 	++count;
+  	// }
+
 	// initialize rtcop
   	RTCOP::Framework::Instance->Initialize();
 
 	// instantiate class Hello
 	baselayer::Hello* hello = RTCOP::copnew<baselayer::Hello>();
 	hello->Print();
-  	rate.sleep();                   
-	// Ground Mode 起動
-	active_normal(RTCOP::Generated::LayerID::Ground);
+  	rate.sleep(); 
+	
+	std_msgs::String msg;
+
+	std::stringstream ss;
+	
+	//ss<<"hello world!";
+	msg.data = "hello world!";
+    ROS_INFO("%s", msg.data.c_str());
+    chatter_pub.publish(msg);
+    ros::spinOnce();
+    rate.sleep();
+
+	sleep(5);
 	hello->Print();
-  	rate.sleep();                   
-	sleep(3);
+	//ss.clear();
+	//ss<<"ground_activate";
+	msg.data = "ground_activate";
+    ROS_INFO("%s", msg.data.c_str());
+    chatter_pub.publish(msg);
+    ros::spinOnce();
+    rate.sleep();
 
-	// Ground Mode 解除（PLAMにおける正常系deactivate関数をちょっとBUGが発見したため、もうちょっと修正します）
-	RTCOP::deactivate(RTCOP::Generated::LayerID::Ground);
-	// Flight Mode　起動
-	active_normal(RTCOP::Generated::LayerID::Flight);
-	hello->Print(); //Flight modeアクティベーションが完了していないのでbase layerのhelloが表示される
-	sleep(25);
+	sleep(5);
+	hello->Print();
+	//ss.clear();
+	//ss<<"ground_deactivate";
+	msg.data = "ground_deactivate";
+    ROS_INFO("%s", msg.data.c_str());
+    chatter_pub.publish(msg);
+    ros::spinOnce();
+    rate.sleep();
+	
+	sleep(5);
+	hello->Print();
 
-	//信号途絶が発生
-	ROS_INFO_STREAM("[RTCOP]:No signal found!");
-
-	//Nosignal Mode 起動
-	active_suspend_until_deactive(RTCOP::Generated::LayerID::Nosignal);
-
-	int time_counter = 0;
-	while (ros::ok())//一秒ごとでprint関数を実行する
-	{
-		hello->Print();//Nosignal modeアクティベーションが完了。Nosignal modeのhelloが表示される
-		sleep(1);
-		time_counter++;
-		if (time_counter >= 10)
-		{
-			break;
-		}
-		
-	}
-
-	//再接続成功、Nosignal Mode 解除
-	deactive_suspend(RTCOP::Generated::LayerID::Nosignal);                   
-	hello->Print(); //Flight modeアクティベーションが完了していないのでbase layerのhelloが表示される
-	sleep(70);
-	hello->Print(); //Flight modeアクティベーションが完了。Flight modeのhelloが表示される
-	// Helloのdelete
-	delete hello;
-
-	// RTCOPの終了処理
-	RTCOP::Framework::Instance->Finalize();
 }
