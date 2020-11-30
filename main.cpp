@@ -7,6 +7,22 @@
 using namespace gnc;
 using namespace PLAM;
 
+ros::Publisher pub;
+ros::Subscriber sub;
+
+void return_msg(const std_msgs::String::ConstPtr& msg){
+    ROS_INFO("I heard:[%s]", msg->data.c_str());
+    //ros::spinOnce();
+	string ground_activate = "ground_activate_ok";
+	if(strcmp(msg->data.c_str(),ground_activate.c_str()) == 0){
+        //active_normal(RTCOP::Generated::LayerID::Flight);
+        active_normal(RTCOP::Generated::LayerID::Ground);
+    }else if(strcmp(msg->data.c_str(),"ground_deactivate_ok") == 0){
+        deactive_normal(RTCOP::Generated::LayerID::Ground);
+    }
+	//ros::spinOnce();
+}
+
 int main(int argc, char **argv) {
 	//------------ROS・Ardupilotなどの初期化------------
 	// initialize ros
@@ -16,7 +32,8 @@ int main(int argc, char **argv) {
 	
 	init_publisher_subscriber(gnc_node);
 
-	ros::Publisher chatter_pub = gnc_node.advertise<std_msgs::String>("chatter",1000);
+	pub = gnc_node.advertise<std_msgs::String>("chatter",1000);
+	sub = gnc_node.subscribe("chatter2", 1000, return_msg);
 
 	// wait for FCU connection
 	wait4connect();
@@ -28,26 +45,6 @@ int main(int argc, char **argv) {
 	initialize_local_frame();            
 	//------------ROS・Ardupilotなどの初期化　完了------------
 	int count = 0;
-  	// while (ros::ok())
-  	// {
-    // 	/* code */
-    // 	std_msgs::String msg;
-
-    // 	std::stringstream ss;
-
-    // 	ss<< "hello world" << count;
-
-    // 	msg.data = ss.str();
-
-    // 	ROS_INFO("%s", msg.data.c_str());
-
-    // 	chatter_pub.publish(msg);
-
-    // 	ros::spinOnce();
-
-    // 	rate.sleep();
-    // 	++count;
-  	// }
 
 	// initialize rtcop
   	RTCOP::Framework::Instance->Initialize();
@@ -55,40 +52,52 @@ int main(int argc, char **argv) {
 	// instantiate class Hello
 	baselayer::Hello* hello = RTCOP::copnew<baselayer::Hello>();
 	hello->Print();
-  	rate.sleep(); 
+  	//rate.sleep(); 
 	
 	std_msgs::String msg;
 
 	std::stringstream ss;
-	
-	//ss<<"hello world!";
-	msg.data = "hello world!";
-    ROS_INFO("%s", msg.data.c_str());
-    chatter_pub.publish(msg);
-    ros::spinOnce();
-    rate.sleep();
 
+	msg.data = "initial message";
+	
+	//メッセージ隊列を安定させるため初期化メッセージを入隊させ
+	for(int i = 0;i < 10;i ++){
+    	ROS_INFO("%s", msg.data.c_str());
+    	pub.publish(msg);
+    	ros::spinOnce();
+    	//rate.sleep();
+		sleep(1);
+	}
+	
 	sleep(5);
-	hello->Print();
-	//ss.clear();
-	//ss<<"ground_activate";
+	
+	//-----------------グランドレイヤーをアクティベート
 	msg.data = "ground_activate";
     ROS_INFO("%s", msg.data.c_str());
-    chatter_pub.publish(msg);
+    pub.publish(msg);
     ros::spinOnce();
-    rate.sleep();
+
+	//********ground_nodeの応答と同期化するため、後回して任意のメッセージ（アクティベート関連なし）を入隊させる
+	sleep(1);
+	msg.data = "over";
+    pub.publish(msg);
+    ros::spinOnce();
+	//***********************
 
 	sleep(5);
 	hello->Print();
-	//ss.clear();
-	//ss<<"ground_deactivate";
+	
+	//--------------------グランドレイヤーをデアクティベート
 	msg.data = "ground_deactivate";
     ROS_INFO("%s", msg.data.c_str());
-    chatter_pub.publish(msg);
+    pub.publish(msg);
     ros::spinOnce();
-    rate.sleep();
+
+	sleep(1);
+	msg.data = "over";
+    pub.publish(msg);
+    ros::spinOnce();
 	
 	sleep(5);
 	hello->Print();
-
 }
