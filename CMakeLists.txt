@@ -10,6 +10,17 @@ find_package(catkin REQUIRED COMPONENTS
   mavros
   roscpp
   std_msgs
+  message_generation
+)
+
+add_service_files(
+  FILES
+  AddTwoInts.srv
+)
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs  # Or other packages containing msgs
 )
 
 catkin_package(
