@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>Ardupilot-RTCOP-ROS</name>
+  <name>ardupilot_rtcop_ros</name>
   <version>0.0.0</version>
-  <description>The Ardupilot-RTCOP-ROS package</description>
+  <description>The ardupilot_rtcop_ros package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->

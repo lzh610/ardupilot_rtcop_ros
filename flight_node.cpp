@@ -13,16 +13,16 @@ bool msg_return(ardupilot_rtcop_ros::activation_msg::Request &req,
          ardupilot_rtcop_ros::activation_msg::Response &res)
 {
     // テスト版として応答メッセージに"_ok"を追加だけ
-    if(strcmp(req.activation.c_str(),"ground_activate") == 0 || strcmp(req.activation.c_str(),"ground_deactivate") == 0)
+    if(strcmp(req.activation.c_str(),"flight_activate") == 0 || strcmp(req.activation.c_str(),"flight_deactivate") == 0)
         res.activation_return = req.activation + "_ok";
     ROS_INFO("request: %s", res.activation_return.c_str()); 
     return true;
 }
 
 int main(int argc, char **argv){
-    ros::init(argc,argv,"ground_node");
-    ros::NodeHandle ground_node;
-    ros::ServiceServer service = ground_node.advertiseService("activation", msg_return);
+    ros::init(argc,argv,"flight_node");
+    ros::NodeHandle flight_node;
+    ros::ServiceServer service = flight_node.advertiseService("activation2", msg_return);
     ros::spin();
     return 0;
 }

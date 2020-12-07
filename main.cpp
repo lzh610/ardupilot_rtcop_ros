@@ -3,24 +3,59 @@
 #include "Generated/BaseLayer.h"
 #include "gnc_functions.h"
 #include "ActiveController.h"
+#include "ardupilot_rtcop_ros/activation_msg.h"
 
 using namespace gnc;
 using namespace PLAM;
 
-ros::Publisher pub;
-ros::Subscriber sub;
+ros::ServiceClient client;
+ros::ServiceClient client2;
+ros::ServiceClient client3;
 
-void return_msg(const std_msgs::String::ConstPtr& msg){
-    ROS_INFO("I heard:[%s]", msg->data.c_str());
-    //ros::spinOnce();
-	string ground_activate = "ground_activate_ok";
-	if(strcmp(msg->data.c_str(),ground_activate.c_str()) == 0){
-        //active_normal(RTCOP::Generated::LayerID::Flight);
-        active_normal(RTCOP::Generated::LayerID::Ground);
-    }else if(strcmp(msg->data.c_str(),"ground_deactivate_ok") == 0){
-        deactive_normal(RTCOP::Generated::LayerID::Ground);
-    }
-	//ros::spinOnce();
+ardupilot_rtcop_ros::activation_msg srv;
+ardupilot_rtcop_ros::activation_msg srv2;
+ardupilot_rtcop_ros::activation_msg srv3;
+
+//簡単なコンテストリースナーを作成しました、カスタマイズで定義できます。
+void activation_execution(string request,ros::ServiceClient this_client,ardupilot_rtcop_ros::activation_msg this_srv){
+	
+	this_srv.request.activation = request;
+
+	if (this_client.call(this_srv))
+    {
+		ROS_INFO("request: %s", this_srv.response.activation_return.c_str());
+		// ROS_INFO("request: %s", srv2.response.activation_return.c_str());
+		// ROS_INFO("request: %s", srv3.response.activation_return.c_str()); 
+		if(strcmp(this_srv.response.activation_return.c_str(),"ground_activate_ok") == 0){
+			active_normal(RTCOP::Generated::LayerID::Ground);
+		}
+		else if(strcmp(this_srv.response.activation_return.c_str(),"ground_deactivate_ok") == 0)
+		{ 
+			deactive_normal(RTCOP::Generated::LayerID::Ground);
+		}
+		else if(strcmp(this_srv.response.activation_return.c_str(),"flight_activate_ok") == 0)
+		{
+			active_normal(RTCOP::Generated::LayerID::Flight);
+		}
+		else if(strcmp(this_srv.response.activation_return.c_str(),"flight_deactivate_ok") == 0)
+		{ 
+			deactive_normal(RTCOP::Generated::LayerID::Flight);
+		}
+		else if(strcmp(this_srv.response.activation_return.c_str(),"nosignal_activate_ok") == 0)
+		{ 
+			active_suspend_until_deactive(RTCOP::Generated::LayerID::Nosignal);
+		}
+		else if(strcmp(this_srv.response.activation_return.c_str(),"nosignal_deactivate_ok") == 0)
+		{ 
+			deactive_suspend(RTCOP::Generated::LayerID::Nosignal);
+		}
+		
+		
+		
+	}
+	else{
+		ROS_ERROR("Failed to call service add_two_ints");
+	}
 }
 
 int main(int argc, char **argv) {
@@ -31,9 +66,6 @@ int main(int argc, char **argv) {
     ros::Rate rate(1); 
 	
 	init_publisher_subscriber(gnc_node);
-
-	pub = gnc_node.advertise<std_msgs::String>("chatter",1000);
-	sub = gnc_node.subscribe("chatter2", 1000, return_msg);
 
 	// wait for FCU connection
 	wait4connect();
@@ -54,50 +86,54 @@ int main(int argc, char **argv) {
 	hello->Print();
   	//rate.sleep(); 
 	
-	std_msgs::String msg;
+	client = gnc_node.serviceClient<ardupilot_rtcop_ros::activation_msg>("activation");
+	client2 = gnc_node.serviceClient<ardupilot_rtcop_ros::activation_msg>("activation2");
+	client3 = gnc_node.serviceClient<ardupilot_rtcop_ros::activation_msg>("activation3");
 
-	std::stringstream ss;
+	activation_execution("ground_activate", client, srv);
 
-	msg.data = "initial message";
-	
-	//メッセージ隊列を安定させるため初期化メッセージを入隊させ
-	for(int i = 0;i < 10;i ++){
-    	ROS_INFO("%s", msg.data.c_str());
-    	pub.publish(msg);
-    	ros::spinOnce();
-    	//rate.sleep();
+	sleep(1);
+	hello->Print();
+	sleep(2);
+
+	activation_execution("ground_deactivate", client, srv);
+
+	sleep(1);
+	hello->Print();
+
+	activation_execution("flight_activate", client2, srv2);
+	hello->Print();
+	sleep(25);
+
+	ROS_INFO_STREAM("[RTCOP]:No signal found!");
+
+	activation_execution("nosignal_activate", client3, srv3);
+
+	int time_counter = 0;
+	while (ros::ok())//一秒ごとでprint関数を実行する
+	{
+		hello->Print();//Nosignal modeアクティベーションが完了。Nosignal modeのhelloが表示される
 		sleep(1);
+		time_counter++;
+		if (time_counter >= 10)
+		{
+			break;
+		}
+		
 	}
-	
-	sleep(5);
-	
-	//-----------------グランドレイヤーをアクティベート
-	msg.data = "ground_activate";
-    ROS_INFO("%s", msg.data.c_str());
-    pub.publish(msg);
-    ros::spinOnce();
 
-	//********ground_nodeの応答と同期化するため、後回して任意のメッセージ（アクティベート関連なし）を入隊させる
-	sleep(1);
-	msg.data = "over";
-    pub.publish(msg);
-    ros::spinOnce();
-	//***********************
+	activation_execution("nosignal_deactivate", client3, srv3);
 
-	sleep(5);
-	hello->Print();
-	
-	//--------------------グランドレイヤーをデアクティベート
-	msg.data = "ground_deactivate";
-    ROS_INFO("%s", msg.data.c_str());
-    pub.publish(msg);
-    ros::spinOnce();
+	hello->Print(); //Flight modeアクティベーションが完了していないのでbase layerのhelloが表示される
+	sleep(70);
+	hello->Print(); //Flight modeアクティベーションが完了。Flight modeのhelloが表示される
+	// Helloのdelete
+	delete hello;
 
-	sleep(1);
-	msg.data = "over";
-    pub.publish(msg);
-    ros::spinOnce();
-	
-	sleep(5);
-	hello->Print();
+	// RTCOPの終了処理
+	RTCOP::Framework::Instance->Finalize();
+
+
+
+
 }
