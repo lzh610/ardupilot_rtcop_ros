@@ -22,7 +22,7 @@ bool msg_return(ardupilot_rtcop_ros::activation_msg::Request &req,
 int main(int argc, char **argv){
     ros::init(argc,argv,"nosignal_node");
     ros::NodeHandle nosignal_node;
-    ros::ServiceServer service = nosignal_node.advertiseService("activation3", msg_return);
+    ros::ServiceServer service = nosignal_node.advertiseService("nosignal_activation", msg_return);
     ros::spin();
     return 0;
 }

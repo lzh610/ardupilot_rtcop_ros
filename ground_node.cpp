@@ -22,7 +22,7 @@ bool msg_return(ardupilot_rtcop_ros::activation_msg::Request &req,
 int main(int argc, char **argv){
     ros::init(argc,argv,"ground_node");
     ros::NodeHandle ground_node;
-    ros::ServiceServer service = ground_node.advertiseService("activation", msg_return);
+    ros::ServiceServer service = ground_node.advertiseService("ground_activation", msg_return);
     ros::spin();
     return 0;
 }

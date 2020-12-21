@@ -1,0 +1,8 @@
+<launch>
+    <node name="ground_node" pkg="ardupilot_rtcop_ros"
+          type="ground_node" output="screen"/>
+    <node name="flight_node" pkg="ardupilot_rtcop_ros"
+          type="flight_node" output="screen"/>
+    <node name="nosignal_node" pkg="ardupilot_rtcop_ros"
+          type="nosignal_node" output="screen"/>
+</launch>

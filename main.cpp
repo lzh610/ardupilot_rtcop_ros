@@ -8,13 +8,15 @@
 using namespace gnc;
 using namespace PLAM;
 
-ros::ServiceClient client;
-ros::ServiceClient client2;
-ros::ServiceClient client3;
+//Client
+ros::ServiceClient client_ground;
+ros::ServiceClient client_flight;
+ros::ServiceClient client_nosignal;
 
-ardupilot_rtcop_ros::activation_msg srv;
-ardupilot_rtcop_ros::activation_msg srv2;
-ardupilot_rtcop_ros::activation_msg srv3;
+//レイヤコントロールノードのサーバーコールの受信
+ardupilot_rtcop_ros::activation_msg srv_ground;
+ardupilot_rtcop_ros::activation_msg srv_flight;
+ardupilot_rtcop_ros::activation_msg srv_nosignal;
 
 //簡単なコンテストリースナーを作成しました、カスタマイズで定義できます。
 void activation_execution(string request,ros::ServiceClient this_client,ardupilot_rtcop_ros::activation_msg this_srv){
@@ -24,8 +26,6 @@ void activation_execution(string request,ros::ServiceClient this_client,ardupilo
 	if (this_client.call(this_srv))
     {
 		ROS_INFO("request: %s", this_srv.response.activation_return.c_str());
-		// ROS_INFO("request: %s", srv2.response.activation_return.c_str());
-		// ROS_INFO("request: %s", srv3.response.activation_return.c_str()); 
 		if(strcmp(this_srv.response.activation_return.c_str(),"ground_activate_ok") == 0){
 			active_normal(RTCOP::Generated::LayerID::Ground);
 		}
@@ -54,7 +54,7 @@ void activation_execution(string request,ros::ServiceClient this_client,ardupilo
 		
 	}
 	else{
-		ROS_ERROR("Failed to call service add_two_ints");
+		ROS_ERROR("Failed to call service");
 	}
 }
 
@@ -86,28 +86,30 @@ int main(int argc, char **argv) {
 	hello->Print();
   	//rate.sleep(); 
 	
-	client = gnc_node.serviceClient<ardupilot_rtcop_ros::activation_msg>("activation");
-	client2 = gnc_node.serviceClient<ardupilot_rtcop_ros::activation_msg>("activation2");
-	client3 = gnc_node.serviceClient<ardupilot_rtcop_ros::activation_msg>("activation3");
+	//クライントとサーバーの対応関係を構築
+	client_ground = gnc_node.serviceClient<ardupilot_rtcop_ros::activation_msg>("ground_activation");
+	client_flight = gnc_node.serviceClient<ardupilot_rtcop_ros::activation_msg>("flight_activation");
+	client_nosignal = gnc_node.serviceClient<ardupilot_rtcop_ros::activation_msg>("nosignal_activation");
 
-	activation_execution("ground_activate", client, srv);
+	//グランドモードを起動
+	activation_execution("ground_activate", client_ground, srv_ground);
 
 	sleep(1);
-	hello->Print();
+	hello->Print();//ここでGround Modeをアウトプットとする
 	sleep(2);
 
-	activation_execution("ground_deactivate", client, srv);
+	activation_execution("ground_deactivate", client_ground, srv_ground);
 
 	sleep(1);
-	hello->Print();
+	hello->Print();//ここでBaseClassをアウトプットとする
 
-	activation_execution("flight_activate", client2, srv2);
-	hello->Print();
+	activation_execution("flight_activate", client_flight, srv_flight);
+	hello->Print();//ここでBaseClassをアウトプットとする
 	sleep(25);
 
 	ROS_INFO_STREAM("[RTCOP]:No signal found!");
 
-	activation_execution("nosignal_activate", client3, srv3);
+	activation_execution("nosignal_activate", client_nosignal, srv_nosignal);
 
 	int time_counter = 0;
 	while (ros::ok())//一秒ごとでprint関数を実行する
@@ -122,7 +124,7 @@ int main(int argc, char **argv) {
 		
 	}
 
-	activation_execution("nosignal_deactivate", client3, srv3);
+	activation_execution("nosignal_deactivate", client_nosignal, srv_nosignal);
 
 	hello->Print(); //Flight modeアクティベーションが完了していないのでbase layerのhelloが表示される
 	sleep(70);
