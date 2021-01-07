@@ -20,6 +20,10 @@ baselayer
 		ROS_INFO_STREAM("[RTCOP]:BaseClass");
 	}
 
+	void Hello::Flying(float x, float y){
+		ROS_INFO_STREAM("[RTCOP]:Flying Base");
+	}
+
 }
 
 //Ground Mode
@@ -29,6 +33,10 @@ layer Ground
 	{
 		ROS_INFO_STREAM("[RTCOP]:Ground Mode");
 	}
+
+	void Hello::Flying(float x, float y){
+		ROS_INFO_STREAM("[RTCOP]:On the ground");
+	}
 }
 
 //Flight Mode
@@ -37,6 +45,18 @@ layer Flight
 	void Hello::Print()
 	{
 		ROS_INFO_STREAM("[RTCOP]:Flight Mode");
+	}
+
+	void Hello::Flying(float x, float y){
+		ROS_INFO_STREAM("[RTCOP]:Flying");
+		ros::Rate rate(1);
+		//geometry_msgs::Point now_point = get_current_location();
+		nextWayPoint.x = x;
+		nextWayPoint.y = y;
+		nextWayPoint.z = 12;
+		nextWayPoint.psi = 0;
+		set_destination(nextWayPoint.x,nextWayPoint.y,nextWayPoint.z,nextWayPoint.psi);
+
 	}
 
 	// アクティベート開始時に実行されるイベントハンドラ
