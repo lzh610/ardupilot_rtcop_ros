@@ -51,20 +51,26 @@ source ~/.bashrc
 
 ## 実行
 
-ターミナル４つ開く（A，B，C，Dと略称）
-順番により
 ```
-roslaunch iq_sim runway.launch　
-cd ~/ardupilot/ArduCopter/ && sim_vehicle.py -v ArduCopter -f gazebo-iris --cons
-roslaunch iq_sim apm.launch
-rosrun Ardupilot-RTCOP-ROS Ardupilot-RTCOP-ROS_node
+cd ~/catkin_ws/src/ardupilot_rtcop_ros/shell/
+sh node_group_start.sh
+```
+
+十秒ぐらいを待ちして
+
+```
+rosrun ardupilot_rtcop_ros ardupilot_rtcop_ros_node
 ```
 
 を実行する
 
-Ｄを実行したらＢに戻し、"mode guided"を実行
+元のターミナルで３つのタブが自動的に開かれる（以下で左側からA,B,Cと略称する）
 
-すべてのINFOをＤで表示する。
+Aタブでメインノードを実行する
+
+レイヤコントロールノードにおけるリクエスト情報がＢタブに見られる
+
+メインノードの動かせるためＣタブでmode guidedを入力してください。
 
 ## チュートリアル
 
