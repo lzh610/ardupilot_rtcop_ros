@@ -277,7 +277,9 @@ The takeoff function will arm the drone and put the drone in a hover above the i
 int takeoff(float takeoff_alt)
 {
 	//intitialize first waypoint of mission
-	set_destination(0,0,takeoff_alt,0);
+	geometry_msgs::Point now_point = get_current_location();
+
+	set_destination(now_point.x,now_point.y,takeoff_alt,0);
 	for(int i=0; i<100; i++)
 	{
 		local_pos_pub.publish(waypoint_g);

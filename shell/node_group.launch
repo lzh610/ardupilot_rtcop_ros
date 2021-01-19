@@ -5,4 +5,12 @@
           type="flight_node" output="screen"/>
     <node name="nosignal_node" pkg="ardupilot_rtcop_ros"
           type="nosignal_node" output="screen"/>
+    <node name="strongwind_node" pkg="ardupilot_rtcop_ros"
+          type="strongwind_node" output="screen"/>
+    <node name="storm_node" pkg="ardupilot_rtcop_ros"
+          type="storm_node" output="screen"/>
+    <node name="lowpower_node" pkg="ardupilot_rtcop_ros"
+          type="lowpower_node" output="screen"/>
+    <node name="nopower_node" pkg="ardupilot_rtcop_ros"
+          type="nopower_node" output="screen"/>
 </launch>
