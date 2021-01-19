@@ -104,7 +104,7 @@ void activation_execution(string request,ros::ServiceClient this_client,ardupilo
 }
 
 void waiting(){
-	// 目標地点に到達するまでの待機命令
+	// 目標地点に到達するまでシナリオノードの待機命令
 	while(ros::ok()){
 		ros::spinOnce();
 		//rate.sleep()
@@ -118,8 +118,10 @@ void waiting(){
 	}
 }
 
+// 外部ファイルに時間データを書き込むこと。シナリオ完了後で実行する
 void write_data(){
 	ofstream outfile;
+	//　パスは適当に記入してください
 	outfile.open("/home/lzh/catkin_ws/src/ardupilot_rtcop_ros/data/data.csv", ios::out | ios::app);
 	if(!outfile){
 		ROS_INFO("file rewriting error!!");

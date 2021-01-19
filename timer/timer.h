@@ -5,11 +5,11 @@
 #include <string.h>
 
 namespace timer{
-    inline ros::WallTime ros_begin;
+    inline ros::WallTime ros_begin; //walltimeでリヤル時間を表示する
     inline ros::WallDuration ros_duration;
-    inline std::stringstream output_data;
+    inline std::stringstream output_data; //時間データを記録する
 
-    extern void real_time_print();
+    extern void real_time_print();//タイマー
 }
 
 #endif
