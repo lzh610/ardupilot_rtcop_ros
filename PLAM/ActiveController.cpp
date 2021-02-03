@@ -7,6 +7,7 @@
 //
 
 #include "ActiveController.h"
+#include "../timer/timer.h"
 
 
 using namespace std;
@@ -172,6 +173,7 @@ void active_normal(RTCOP::Generated::LayerID layerid){
     thread t(active_or_deactive,layerid,true);
     t.detach();
     usleep(1000);
+    timer::real_time_print(); // 性能評価用
 }
 
 void deactive_normal(RTCOP::Generated::LayerID layerid){
