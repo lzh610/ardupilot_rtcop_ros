@@ -1,5 +1,5 @@
 #!/bin/bash
-gnome-terminal --tab "world start" -- roslaunch iq_sim runway.launch;
+gnome-terminal --tab "world start" -- roslaunch ardupilot_rtcop_ros runway_test.launch;
 
 sleep 10;
 

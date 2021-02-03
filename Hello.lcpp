@@ -4,8 +4,11 @@
 #include <stdio.h>
 #include "gnc_functions.h"
 #include "ActiveController.h"
+#include "timer.h"
 using namespace gnc;
 using namespace PLAM;
+using namespace timer;
+
 // base layer
 baselayer
 {
@@ -20,6 +23,10 @@ baselayer
 		ROS_INFO_STREAM("[RTCOP]:BaseClass");
 	}
 
+	void Hello::Flying(float x, float y){
+		ROS_INFO_STREAM("[RTCOP]:Flying Base");
+	}
+
 }
 
 //Ground Mode
@@ -28,6 +35,10 @@ layer Ground
 	void Hello::Print()
 	{
 		ROS_INFO_STREAM("[RTCOP]:Ground Mode");
+	}
+
+	void Hello::Flying(float x, float y){
+		ROS_INFO_STREAM("[RTCOP]:On the ground");
 	}
 }
 
@@ -39,13 +50,28 @@ layer Flight
 		ROS_INFO_STREAM("[RTCOP]:Flight Mode");
 	}
 
+	void Hello::Flying(float x, float y){
+		ROS_INFO_STREAM("[RTCOP]:Flying");
+		ros::Rate rate(1);
+		//geometry_msgs::Point now_point = get_current_location();
+		nextWayPoint.x = x;
+		nextWayPoint.y = y;
+		nextWayPoint.z = 10;
+		nextWayPoint.psi = 0;
+		set_destination(nextWayPoint.x,nextWayPoint.y,nextWayPoint.z,nextWayPoint.psi);
+
+	}
+
 	// アクティベート開始時に実行されるイベントハンドラ
 	void OnActivating()
 	{
 		ros::Rate rate(1);
+		ros::spinOnce();
+		set_mode("GUIDED");
 		takeoff(1); 
-		nextWayPoint.x = 0;
-		nextWayPoint.y = 0;
+		geometry_msgs::Point now_point = get_current_location();
+		nextWayPoint.x = now_point.x;
+		nextWayPoint.y = now_point.y;
 		nextWayPoint.z = 2;
 		nextWayPoint.psi = 0;
 		// waypointlist.push_back(nextWayPoint);
@@ -63,7 +89,7 @@ layer Flight
 			sleep(1);
 			break_point();			
 			if(check_waypoint_reached() == 1){
-				// ROS_INFO_STREAM()
+				// ROS_INFO("check point:%d",check_waypoint_reached());
 				rate.sleep();
 				nextWayPoint.z ++;
 				set_destination(nextWayPoint.x,nextWayPoint.y,nextWayPoint.z,nextWayPoint.psi);
@@ -73,6 +99,9 @@ layer Flight
 			if(nextWayPoint.z >= 10)
 				break;
 		}
+		
+		//time keeper
+		real_time_print();
 
 	}
 
@@ -104,19 +133,28 @@ layer Nosignal
 		ROS_INFO_STREAM("[RTCOP]:Nosignal Mode");
 	}
 
+	void Hello::Flying(float x, float y){
+		ROS_INFO_STREAM("[RTCOP]:Please wait for signal recovery!!");
+	}
+
 	// アクティベート開始時に実行されるイベントハンドラ
 	void OnActivating()
 	{
 		ROS_INFO_STREAM("[RTCOP]:NO SIGNAL!!WARNING!!");
+		ros::spinOnce();
 		ros::Rate rate(1);
 		rate.sleep();
+		geometry_msgs::Point now_point = get_current_location();
 		// land();
-		nextWayPoint.x = 0;
-		nextWayPoint.y = 0;
+		nextWayPoint.x = now_point.x;
+		nextWayPoint.y = now_point.y;
 		nextWayPoint.z = 0;
 		nextWayPoint.psi = 0;
 		set_destination(nextWayPoint.x,nextWayPoint.y,nextWayPoint.z,nextWayPoint.psi);		
 		ROS_INFO_STREAM("[RTCOP]:NO SIGNAL!!WARNING!!");
+
+		//time keeper
+		real_time_print();
 	}
 
 	// アクティベート終了時に実行されるイベントハンドラ
@@ -136,6 +174,226 @@ layer Nosignal
 	void OnDeactivated()
 	{
 		ROS_INFO_STREAM("[RTCOP]:SIGNAL RECOVER");
+	}
+
+}
+
+//StrongWind Mode
+layer StrongWind
+{
+	void Hello::Print()
+	{
+		ROS_INFO_STREAM("[RTCOP]:StrongWind Mode");
+	}
+
+	void Hello::Flying(float x, float y){
+		ROS_INFO_STREAM("[RTCOP]:StrongWind Flying");
+		ros::Rate rate(1);
+		//geometry_msgs::Point now_point = get_current_location();
+		nextWayPoint.x = x;
+		nextWayPoint.y = y;
+		nextWayPoint.z = 5;
+		nextWayPoint.psi = 0;
+		set_destination(nextWayPoint.x,nextWayPoint.y,nextWayPoint.z,nextWayPoint.psi);
+
+	}
+
+	// アクティベート開始時に実行されるイベントハンドラ
+	void OnActivating()
+	{
+		ROS_INFO_STREAM("[RTCOP]:StrongWind!!WARNING!!");
+		ros::spinOnce();
+		ros::Rate rate(1);
+		rate.sleep();
+		geometry_msgs::Point now_point = get_current_location();
+		// land();
+		nextWayPoint.x = now_point.x;
+		nextWayPoint.y = now_point.y;
+		nextWayPoint.z = 5;
+		nextWayPoint.psi = 0;
+		set_destination(nextWayPoint.x,nextWayPoint.y,nextWayPoint.z,nextWayPoint.psi);		
+		ROS_INFO_STREAM("[RTCOP]:StrongWind!!WARNING!!");
+
+		//time keeper
+		real_time_print();
+	}
+
+	// アクティベート終了時に実行されるイベントハンドラ
+	void OnActivated()
+	{
+		ROS_INFO_STREAM("[RTCOP]:StrongWind Mode READY\n");
+	}
+
+	// ディアクティベート開始時に実行されるイベントハンドラ
+	void OnDeactivating()
+	{	
+		ROS_INFO_STREAM("[RTCOP]:StrongWind OVER!");
+	}
+
+	// ディアクティベート終了時に実行されるイベントハンドラ
+	void OnDeactivated()
+	{
+		ROS_INFO_STREAM("[RTCOP]:StrongWind OVER");
+	}
+
+}
+
+
+//Storm Mode
+layer Storm
+{
+	void Hello::Print()
+	{
+		ROS_INFO_STREAM("[RTCOP]:Nosignal Mode");
+	}
+
+	void Hello::Flying(float x, float y){
+		ROS_INFO_STREAM("[RTCOP]:Danger!!Please wait for the storm over!!!");
+	}
+
+	// アクティベート開始時に実行されるイベントハンドラ
+	void OnActivating()
+	{
+		ROS_INFO_STREAM("[RTCOP]:STORM HAPPENING!!DANGERS!!");
+		ros::spinOnce();
+		ros::Rate rate(1);
+		rate.sleep();
+		// geometry_msgs::Point now_point = get_current_location();
+		land();
+		// nextWayPoint.x = now_point.x;
+		// nextWayPoint.y = now_point.y;
+		// nextWayPoint.z = 0;
+		// nextWayPoint.psi = 0;
+		// set_destination(nextWayPoint.x,nextWayPoint.y,nextWayPoint.z,nextWayPoint.psi);		
+		// ROS_INFO_STREAM("[RTCOP]:STORM HAPPENING!!DANGERS!!");
+
+		//time keeper
+		real_time_print();
+	}
+
+	// アクティベート終了時に実行されるイベントハンドラ
+	void OnActivated()
+	{
+		ROS_INFO_STREAM("[RTCOP]:STORM Mode READY\n");
+	}
+
+	// ディアクティベート開始時に実行されるイベントハンドラ
+	void OnDeactivating()
+	{
+		ROS_INFO_STREAM("[RTCOP]:STORM OVER!");
+		// takeoff(1);
+	}
+
+	// ディアクティベート終了時に実行されるイベントハンドラ
+	void OnDeactivated()
+	{
+		ROS_INFO_STREAM("[RTCOP]:STORM OVER");
+	}
+
+}
+
+
+//LowPower Mode
+layer LowPower
+{
+	void Hello::Print()
+	{
+		ROS_INFO_STREAM("[RTCOP]:LowPower Mode");
+	}
+
+	void Hello::Flying(float x, float y){
+		ROS_INFO_STREAM("[RTCOP]:LowPower Flying");
+		ros::Rate rate(1);
+		//geometry_msgs::Point now_point = get_current_location();
+		nextWayPoint.x = x;
+		nextWayPoint.y = y;
+		nextWayPoint.z = 5;
+		nextWayPoint.psi = 0;
+		set_destination(nextWayPoint.x,nextWayPoint.y,nextWayPoint.z,nextWayPoint.psi);
+
+	}
+
+	// アクティベート開始時に実行されるイベントハンドラ
+	void OnActivating()
+	{
+		ROS_INFO_STREAM("[RTCOP]:LowPower!!WARNING!!");
+		ros::spinOnce();
+		ros::Rate rate(1);
+		rate.sleep();
+		geometry_msgs::Point now_point = get_current_location();
+		// land();
+		nextWayPoint.x = now_point.x;
+		nextWayPoint.y = now_point.y;
+		nextWayPoint.z = 5;
+		nextWayPoint.psi = 0;
+		set_destination(nextWayPoint.x,nextWayPoint.y,nextWayPoint.z,nextWayPoint.psi);		
+		ROS_INFO_STREAM("[RTCOP]:LowPower!!WARNING!!");
+		//time keeper
+		real_time_print();
+	}
+
+	// アクティベート終了時に実行されるイベントハンドラ
+	void OnActivated()
+	{
+		ROS_INFO_STREAM("[RTCOP]:LowPower Mode READY\n");
+	}
+
+	// ディアクティベート開始時に実行されるイベントハンドラ
+	void OnDeactivating()
+	{	
+		ROS_INFO_STREAM("[RTCOP]:LowPower OVER!");
+	}
+
+	// ディアクティベート終了時に実行されるイベントハンドラ
+	void OnDeactivated()
+	{
+		ROS_INFO_STREAM("[RTCOP]:LowPower OVER");
+	}
+
+}
+
+
+//NoPower Mode
+layer NoPower
+{
+	void Hello::Print()
+	{
+		ROS_INFO_STREAM("[RTCOP]:NoPower Mode");
+	}
+
+	void Hello::Flying(float x, float y){
+		ROS_INFO_STREAM("[RTCOP]:No Power!!!");
+	}
+
+	// アクティベート開始時に実行されるイベントハンドラ
+	void OnActivating()
+	{
+		ROS_INFO_STREAM("[RTCOP]:No Power!!");
+		ros::Rate rate(1);
+		rate.sleep();
+		land();	
+		ROS_INFO_STREAM("[RTCOP]:No Power!!");
+		//time keeper
+		real_time_print();
+	}
+
+	// アクティベート終了時に実行されるイベントハンドラ
+	void OnActivated()
+	{
+		ROS_INFO_STREAM("[RTCOP]:No Power Mode READY\n");
+	}
+
+	// ディアクティベート開始時に実行されるイベントハンドラ
+	void OnDeactivating()
+	{
+		ROS_INFO_STREAM("[RTCOP]:No Power OVER!");
+		// takeoff(1);
+	}
+
+	// ディアクティベート終了時に実行されるイベントハンドラ
+	void OnDeactivated()
+	{
+		ROS_INFO_STREAM("[RTCOP]:No Power OVER");
 	}
 
 }

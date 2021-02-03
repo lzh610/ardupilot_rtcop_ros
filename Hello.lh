@@ -9,6 +9,7 @@ baselayer
 	public:
 		Hello();
 		base void Print();
+		base void Flying(float x,float y);
 	};
 
 }
@@ -20,6 +21,7 @@ layer Ground
 	{
 	public:
 		partial void Print();
+		partial void Flying(float x, float y);
 	};
 
 }
@@ -31,6 +33,7 @@ layer Flight
 	{
 	public:
 		partial void Print();
+		partial void Flying(float x, float y);
 	};
 
 	// アクティベート開始時に実行されるイベントハンドラ
@@ -58,6 +61,7 @@ layer Nosignal
 	{
 	public:
 		partial void Print();
+		partial void Flying(float x, float y);
 	};
 
 	// アクティベート開始時に実行されるイベントハンドラ
@@ -77,3 +81,119 @@ layer Nosignal
 	void OnDeactivated();
 
 }
+
+//StrongWind mode
+layer StrongWind
+{
+	partial class Hello
+	{
+	public:
+		partial void Print();
+		partial void Flying(float x, float y);
+	};
+
+	// アクティベート開始時に実行されるイベントハンドラ
+	[eventhandler(activating)]
+	void OnActivating();
+
+	// アクティベート終了時に実行されるイベントハンドラ
+	[eventhandler(activated)]
+	void OnActivated();
+
+	// ディアクティベート開始時に実行されるイベントハンドラ
+	[eventhandler(deactivating)]
+	void OnDeactivating();
+
+	// ディアクティベート終了時に実行されるイベントハンドラ
+	[eventhandler(deactivated)]
+	void OnDeactivated();
+
+}
+
+//Storm mode
+layer Storm
+{
+	partial class Hello
+	{
+	public:
+		partial void Print();
+		partial void Flying(float x, float y);
+	};
+
+	// アクティベート開始時に実行されるイベントハンドラ
+	[eventhandler(activating)]
+	void OnActivating();
+
+	// アクティベート終了時に実行されるイベントハンドラ
+	[eventhandler(activated)]
+	void OnActivated();
+
+	// ディアクティベート開始時に実行されるイベントハンドラ
+	[eventhandler(deactivating)]
+	void OnDeactivating();
+
+	// ディアクティベート終了時に実行されるイベントハンドラ
+	[eventhandler(deactivated)]
+	void OnDeactivated();
+
+}
+
+//LowPower mode
+layer LowPower
+{
+	partial class Hello
+	{
+	public:
+		partial void Print();
+		partial void Flying(float x, float y);
+	};
+
+	// アクティベート開始時に実行されるイベントハンドラ
+	[eventhandler(activating)]
+	void OnActivating();
+
+	// アクティベート終了時に実行されるイベントハンドラ
+	[eventhandler(activated)]
+	void OnActivated();
+
+	// ディアクティベート開始時に実行されるイベントハンドラ
+	[eventhandler(deactivating)]
+	void OnDeactivating();
+
+	// ディアクティベート終了時に実行されるイベントハンドラ
+	[eventhandler(deactivated)]
+	void OnDeactivated();
+
+}
+
+//NoPower mode
+layer NoPower
+{
+	partial class Hello
+	{
+	public:
+		partial void Print();
+		partial void Flying(float x, float y);
+	};
+
+	// アクティベート開始時に実行されるイベントハンドラ
+	[eventhandler(activating)]
+	void OnActivating();
+
+	// アクティベート終了時に実行されるイベントハンドラ
+	[eventhandler(activated)]
+	void OnActivated();
+
+	// ディアクティベート開始時に実行されるイベントハンドラ
+	[eventhandler(deactivating)]
+	void OnDeactivating();
+
+	// ディアクティベート終了時に実行されるイベントハンドラ
+	[eventhandler(deactivated)]
+	void OnDeactivated();
+
+}
+
+
+
+
