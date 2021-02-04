@@ -54,9 +54,30 @@ add_custom_command(OUTPUT Generated COMMAND "mono" "${PROJECT_SOURCE_DIR}/../RTC
 link_directories(../RTCOP/Library/Linux/x64)
 file(GLOB MAIN main.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
 file(GLOB GROUND LCN/ground_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
+file(GLOB TEST_1 LCN/test_1_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
+file(GLOB TEST_2 LCN/test_2_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
+file(GLOB TEST_3 LCN/test_3_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
+file(GLOB TEST_4 LCN/test_4_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
+file(GLOB TEST_5 LCN/test_5_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
+file(GLOB TEST_6 LCN/test_6_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
+file(GLOB TEST_7 LCN/test_7_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
+file(GLOB TEST_8 LCN/test_8_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
+file(GLOB TEST_9 LCN/test_9_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
+file(GLOB TEST_10 LCN/test_10_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
 
 add_executable(${PROJECT_NAME}_node Generated ${MAIN})
 add_executable(ground_node Generated ${GROUND})
+add_executable(test_1_node Generated ${TEST_1})
+add_executable(test_2_node Generated ${TEST_2})
+add_executable(test_3_node Generated ${TEST_3})
+add_executable(test_4_node Generated ${TEST_4})
+add_executable(test_5_node Generated ${TEST_5})
+add_executable(test_6_node Generated ${TEST_6})
+add_executable(test_7_node Generated ${TEST_7})
+add_executable(test_8_node Generated ${TEST_8})
+add_executable(test_9_node Generated ${TEST_9})
+add_executable(test_10_node Generated ${TEST_10})
+
 
 
 target_link_libraries(${PROJECT_NAME}_node
@@ -65,6 +86,56 @@ target_link_libraries(${PROJECT_NAME}_node
 )
 
 target_link_libraries(ground_node
+  RTCOP
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_1_node
+  RTCOP
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_2_node
+  RTCOP
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_3_node
+  RTCOP
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_4_node
+  RTCOP
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_5_node
+  RTCOP
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_6_node
+  RTCOP
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_7_node
+  RTCOP
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_8_node
+  RTCOP
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_9_node
+  RTCOP
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_10_node
   RTCOP
   ${catkin_LIBRARIES}
 )
