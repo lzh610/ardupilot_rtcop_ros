@@ -64,6 +64,16 @@ file(GLOB TEST_7 LCN/test_7_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/
 file(GLOB TEST_8 LCN/test_8_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
 file(GLOB TEST_9 LCN/test_9_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
 file(GLOB TEST_10 LCN/test_10_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
+file(GLOB TEST_11 LCN/test_11_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
+file(GLOB TEST_12 LCN/test_12_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
+file(GLOB TEST_13 LCN/test_13_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
+file(GLOB TEST_14 LCN/test_14_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
+file(GLOB TEST_15 LCN/test_15_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
+file(GLOB TEST_16 LCN/test_16_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
+file(GLOB TEST_17 LCN/test_17_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
+file(GLOB TEST_18 LCN/test_18_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
+file(GLOB TEST_19 LCN/test_19_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
+file(GLOB TEST_20 LCN/test_20_node.cpp Generated/*.cpp gnc/*.cpp PLAM/*.cpp timer/*.cpp)
 
 add_executable(${PROJECT_NAME}_node Generated ${MAIN})
 add_executable(ground_node Generated ${GROUND})
@@ -77,6 +87,16 @@ add_executable(test_7_node Generated ${TEST_7})
 add_executable(test_8_node Generated ${TEST_8})
 add_executable(test_9_node Generated ${TEST_9})
 add_executable(test_10_node Generated ${TEST_10})
+add_executable(test_11_node Generated ${TEST_11})
+add_executable(test_12_node Generated ${TEST_12})
+add_executable(test_13_node Generated ${TEST_13})
+add_executable(test_14_node Generated ${TEST_14})
+add_executable(test_15_node Generated ${TEST_15})
+add_executable(test_16_node Generated ${TEST_16})
+add_executable(test_17_node Generated ${TEST_17})
+add_executable(test_18_node Generated ${TEST_18})
+add_executable(test_19_node Generated ${TEST_19})
+add_executable(test_20_node Generated ${TEST_20})
 
 
 
@@ -136,6 +156,56 @@ target_link_libraries(test_9_node
 )
 
 target_link_libraries(test_10_node
+  RTCOP
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_11_node
+  RTCOP
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_12_node
+  RTCOP
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_13_node
+  RTCOP
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_14_node
+  RTCOP
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_15_node
+  RTCOP
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_16_node
+  RTCOP
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_17_node
+  RTCOP
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_18_node
+  RTCOP
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_19_node
+  RTCOP
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(test_20_node
   RTCOP
   ${catkin_LIBRARIES}
 )

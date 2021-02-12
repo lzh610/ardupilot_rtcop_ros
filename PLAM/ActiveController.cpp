@@ -141,7 +141,8 @@ void active_or_deact_emergency(RTCOP::Generated::LayerID layerid, int s, vector<
     controller.erase(controller.begin()+get_this_thread_index(this_thread::get_id()));
     m.unlock();
 
-    timer::real_time_print(); // 性能評価用
+    if(f)
+        timer::real_time_print(); // 性能評価用
 }
 
 void active_or_deactive(RTCOP::Generated::LayerID layerid,bool flag){
@@ -167,8 +168,8 @@ void active_or_deactive(RTCOP::Generated::LayerID layerid,bool flag){
     m.lock();
     controller.erase(controller.begin()+get_this_thread_index(this_thread::get_id()));
     m.unlock();
-
-    timer::real_time_print(); // 性能評価用
+    if (flag)
+        timer::real_time_print(); // 性能評価用
 }
 
 //引用可能

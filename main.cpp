@@ -25,7 +25,7 @@ void activation_execution(string request,ros::ServiceClient this_client,ardupilo
     {
 		ROS_INFO("request: %s", this_srv.response.activation_return.c_str());
 		if(strcmp(this_srv.response.activation_return.c_str(),"ground_activate_ok") == 0){
-			active_suspend(RTCOP::Generated::LayerID::Ground);
+			active_normal(RTCOP::Generated::LayerID::Ground);
 		}
 		else if(strcmp(this_srv.response.activation_return.c_str(),"ground_deactivate_ok") == 0)
 		{ 
@@ -60,8 +60,18 @@ int main(int argc, char **argv) {
 	//クライントとサーバーの対応関係を構築
 	client_ground = gnc_node.serviceClient<ardupilot_rtcop_ros::activation_msg>("ground_activation");
 	// Helloのdelete
-	ros_begin = ros::WallTime::now();
-	activation_execution("ground_activate", client_ground, srv_ground);
+	time_sum = 0;
+	for(int i = 0;i < 100;i ++){
+		ros_begin = ros::Time::now();
+		activation_execution("ground_activate", client_ground, srv_ground);
+		usleep(100000);
+		// ros_begin = ros::Time::now();
+		activation_execution("ground_deactivate", client_ground, srv_ground);
+		usleep(100000);
+	}
+	int ave = time_sum/100;
+	ROS_INFO("[ROS]:average time: %d", ave);
+
 	// sleep(5);
 
 	delete hello;

@@ -1,16 +1,45 @@
 <launch>
     <node name="ground_node" pkg="ardupilot_rtcop_ros"
-          type="ground_node" output="screen"/>
-    <node name="flight_node" pkg="ardupilot_rtcop_ros"
-          type="flight_node" output="screen"/>
-    <node name="nosignal_node" pkg="ardupilot_rtcop_ros"
-          type="nosignal_node" output="screen"/>
-    <node name="strongwind_node" pkg="ardupilot_rtcop_ros"
-          type="strongwind_node" output="screen"/>
-    <node name="storm_node" pkg="ardupilot_rtcop_ros"
-          type="storm_node" output="screen"/>
-    <node name="lowpower_node" pkg="ardupilot_rtcop_ros"
-          type="lowpower_node" output="screen"/>
-    <node name="nopower_node" pkg="ardupilot_rtcop_ros"
-          type="nopower_node" output="screen"/>
+          type="ground_node" output="screen"/>    
+    <node name="test_1_node" pkg="ardupilot_rtcop_ros"
+          type="test_1_node" output="screen"/>
+    <node name="test_2_node" pkg="ardupilot_rtcop_ros"
+          type="test_2_node" output="screen"/>
+    <node name="test_3_node" pkg="ardupilot_rtcop_ros"
+          type="test_3_node" output="screen"/>
+    <node name="test_4_node" pkg="ardupilot_rtcop_ros"
+          type="test_4_node" output="screen"/>
+    <node name="test_5_node" pkg="ardupilot_rtcop_ros"
+          type="test_5_node" output="screen"/>
+    <node name="test_6_node" pkg="ardupilot_rtcop_ros"
+          type="test_6_node" output="screen"/>
+    <!--<node name="test_7_node" pkg="ardupilot_rtcop_ros"
+          type="test_7_node" output="screen"/>
+    <node name="test_8_node" pkg="ardupilot_rtcop_ros"
+          type="test_8_node" output="screen"/>
+    <node name="test_9_node" pkg="ardupilot_rtcop_ros"
+          type="test_9_node" output="screen"/>
+    <node name="test_10_node" pkg="ardupilot_rtcop_ros"
+          type="test_10_node" output="screen"/>
+
+    <node name="test_11_node" pkg="ardupilot_rtcop_ros"
+          type="test_11_node" output="screen"/>
+    <node name="test_12_node" pkg="ardupilot_rtcop_ros"
+          type="test_12_node" output="screen"/>
+    <node name="test_13_node" pkg="ardupilot_rtcop_ros"
+          type="test_13_node" output="screen"/>
+    <node name="test_14_node" pkg="ardupilot_rtcop_ros"
+          type="test_14_node" output="screen"/>
+    <node name="test_15_node" pkg="ardupilot_rtcop_ros"
+          type="test_15_node" output="screen"/>
+    <node name="test_16_node" pkg="ardupilot_rtcop_ros"
+          type="test_16_node" output="screen"/>
+    <node name="test_17_node" pkg="ardupilot_rtcop_ros"
+          type="test_17_node" output="screen"/>
+    <node name="test_18_node" pkg="ardupilot_rtcop_ros"
+          type="test_18_node" output="screen"/>
+    <node name="test_19_node" pkg="ardupilot_rtcop_ros"
+          type="test_19_node" output="screen"/>
+    <node name="test_20_node" pkg="ardupilot_rtcop_ros"
+          type="test_20_node" output="screen"/> -->
 </launch>
